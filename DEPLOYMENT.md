@@ -48,7 +48,6 @@ This is a full-stack application with:
    FOURSQUARE_API_KEY = (from Foursquare Developer)
    APOLLO_API_KEY = (from Apollo API)
    EXPLORIUM_API_KEY = (from Explorium API)
-   OVERPASS_API_URL = https://overpass-api.de/api/interpreter
    ```
 
 5. **Deploy**
@@ -147,7 +146,6 @@ MONGO_URI="your_production_mongodb_uri" node src/scripts/seedAdmin.js username p
 | FOURSQUARE_API_KEY | Yes | | Foursquare Developer Console |
 | APOLLO_API_KEY | Yes | | Apollo API website |
 | EXPLORIUM_API_KEY | Yes | | Explorium API website |
-| OVERPASS_API_URL | No | `https://overpass-api.de/api/interpreter` | Default OSM data |
 
 ### Frontend (vercel.json)
 
