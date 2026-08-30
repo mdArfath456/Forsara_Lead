@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: forsara-lead-extractor
+    runtime: node
+    region: oregon
+    plan: standard
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        scope: build
+      - key: SESSION_SECRET
+        scope: build
+      - key: APOLLO_API_KEY
+        scope: build
+      - key: EXPLORIUM_API_KEY
+        scope: build
+      - key: FOURSQUARE_API_KEY
+        scope: build
+      - key: GOOGLE_PLACES_API_KEY
+        scope: build
+      - key: OVERPASS_API_URL
+        value: https://overpass-api.de/api/interpreter
+      - key: REDIS_URL
+        scope: build
