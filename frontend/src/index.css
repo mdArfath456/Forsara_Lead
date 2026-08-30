@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --surface-bg: #0a0a12;
+  --panel-bg: rgba(255, 255, 255, 0.04);
+  --panel-bg-hover: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-border-hover: rgba(255, 255, 255, 0.14);
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --text-primary: #f3f4f6;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+}
+
+html.light {
+  color-scheme: light;
+  --surface-bg: #f4f5fa;
+  --panel-bg: rgba(255, 255, 255, 0.7);
+  --panel-bg-hover: rgba(255, 255, 255, 0.9);
+  --panel-border: rgba(15, 15, 25, 0.08);
+  --panel-border-hover: rgba(15, 15, 25, 0.16);
+  --input-bg: rgba(15, 15, 25, 0.03);
+  --text-primary: #111827;
+  --scrollbar-thumb: rgba(15, 15, 25, 0.15);
+}
+
+body {
+  min-width: 0;
+  overflow-x: hidden;
+  background-color: var(--surface-bg);
+  color: var(--text-primary);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(99, 102, 241, 0.12), transparent),
+    radial-gradient(ellipse 80% 50% at 100% 100%, rgba(168, 85, 247, 0.08), transparent);
+  background-attachment: fixed;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#root {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+@layer components {
+  /* Core glass surface used by cards, sidebar, tables, modals */
+  .glass-panel {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    @apply backdrop-blur-xl shadow-glass;
+  }
+
+  .glass-panel-hover {
+    transition: all 0.2s ease;
+  }
+  .glass-panel-hover:hover {
+    background-color: var(--panel-bg-hover);
+    border-color: var(--panel-border-hover);
+    @apply shadow-glow;
+  }
+
+  .glass-input {
+    background-color: var(--input-bg);
+    border: 1px solid var(--panel-border);
+    @apply w-full rounded-lg px-3 py-2 text-sm placeholder:text-gray-500 focus:outline-none
+      focus:border-brand-500/60 focus:ring-2 focus:ring-brand-500/20 transition-all;
+    color: var(--text-primary);
+  }
+
+  .glass-button-primary {
+    @apply rounded-lg bg-brand-gradient px-4 py-2 text-sm font-medium text-white shadow-glow
+      hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .glass-button-ghost {
+    border: 1px solid var(--panel-border);
+    @apply rounded-lg px-3 py-1.5 text-sm text-gray-400 hover:bg-white/[0.06] transition-all;
+  }
+}
+
+/* Subtle scrollbar to match the theme */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
