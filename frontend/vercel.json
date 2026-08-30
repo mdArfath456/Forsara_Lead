@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://forsara-lead.onrender.com"
+      "destination": "https://forsara-lead.onrender.com/api/$1"
     },
     {
       "source": "/(.*)",
