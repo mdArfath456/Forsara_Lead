@@ -5,7 +5,7 @@ import { EnrichmentJob } from '../../models/EnrichmentJob.model.js';
 import { ApolloOrganizationProvider, domainFromWebsite } from '../leadProviders/ApolloOrganizationProvider.js';
 import { researchCompany } from '../research/CompanyResearchService.js';
 import { computeLeadScore } from '../../utils/leadScoring.js';
-
+import { discoverAndEnrichPeople } from './PeopleDiscoveryService.js';
 const apolloProvider = new ApolloOrganizationProvider();
 
 function companySeedFromLead(lead) {
@@ -120,16 +120,13 @@ export async function runLeadEnrichment(jobId) {
 
   if (company) {
     try {
-      job.status = 'people_discovering';
-      job.steps.people = 'running';
-      job.progress = 45;
+      job.status = 'people_enriching';
       await job.save();
 
-      const existingContacts = await Contact.find({ companyId: company._id }).limit(1).lean();
-      peopleOk = existingContacts.length > 0;
+      const peopleResult = await discoverAndEnrichPeople(company);
+      peopleOk = peopleResult.status === 'enriched' && peopleResult.contactsSaved > 0;
 
-      job.status = 'people_enriching';
-      job.steps.people = peopleOk ? 'completed' : 'partial';
+      job.steps.people = peopleOk ? 'completed' : peopleResult.status === 'no_results' ? 'partial' : 'failed';
       job.progress = 75;
       await job.save();
       lead.enrichmentStatus = peopleOk ? 'contacts_enriched' : 'partial';
@@ -161,9 +158,9 @@ export async function runLeadEnrichment(jobId) {
   const score = Math.min(
     100,
     computeLeadScore(lead) +
-      (company?.employeeCount || company?.employeeRange ? 5 : 0) +
-      (contactsCount ? 10 : 0) +
-      (companyOk ? 5 : 0)
+    (company?.employeeCount || company?.employeeRange ? 5 : 0) +
+    (contactsCount ? 10 : 0) +
+    (companyOk ? 5 : 0)
   );
   lead.leadScore = score;
   lead.enrichmentStatus = companyOk && peopleOk && researchOk ? 'enriched' : companyOk || peopleOk || researchOk ? 'partial' : 'failed';

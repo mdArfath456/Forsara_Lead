@@ -31,6 +31,8 @@ export const env = {
   googlePlacesApiKey: envValue('GOOGLE_PLACES_API_KEY') || '', // optional: free OSM/Foursquare are default
   foursquareApiKey: envValue('FOURSQUARE_API_KEY') || '',
   apolloApiKey: envValue('APOLLO_API_KEY') || '',
+  exploriumApiKey: envValue('EXPLORIUM_API_KEY') || '', // fallback POC provider if Apollo finds nothing
+  maxContactsPerCompany: Number(envValue('MAX_CONTACTS_PER_COMPANY') || 5),
 
   corsOrigin: envValue('CORS_ORIGIN') || 'http://localhost:5173',
 };
