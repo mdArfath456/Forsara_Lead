@@ -132,7 +132,7 @@ function SidebarFooter({ onLogout }) {
       >
         <LogOut size={16} /> Log out
       </button>
-      <div className="hidden md:flex items-center gap-1 ml-auto">
+      <div className="hidden md:flex items-center gap-1 ml-auto relative">
         <NotificationBell />
         <ThemeToggle />
       </div>
