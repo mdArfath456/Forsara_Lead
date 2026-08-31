@@ -116,8 +116,8 @@ function Brand() {
         <Sparkles size={16} className="text-white" />
       </div>
       <div>
-        <div className="font-semibold text-sm leading-tight">Forsara</div>
-        <div className="text-xs text-gray-500 leading-tight">Lead Extractor</div>
+        <div className="font-semibold text-sm leading-tight text-[var(--text-primary)]">Forsara</div>
+        <div className="text-xs text-[var(--text-muted)] leading-tight">Lead Extractor</div>
       </div>
     </div>
   );
@@ -128,11 +128,11 @@ function SidebarFooter({ onLogout }) {
     <div className="m-2.5 flex items-center gap-2">
       <button
         onClick={onLogout}
-        className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-gray-500 hover:bg-white/[0.06] hover:text-gray-300 transition-colors"
+        className="flex-1 flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm text-[var(--text-muted)] hover:bg-white/[0.06] hover:text-[var(--text-primary)] transition-colors"
       >
         <LogOut size={16} /> Log out
       </button>
-      <div className="hidden md:flex items-center gap-1">
+      <div className="hidden md:flex items-center gap-1 ml-auto">
         <NotificationBell />
         <ThemeToggle />
       </div>

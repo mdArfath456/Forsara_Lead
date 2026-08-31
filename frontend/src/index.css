@@ -11,6 +11,10 @@
   --panel-border-hover: rgba(255, 255, 255, 0.14);
   --input-bg: rgba(255, 255, 255, 0.04);
   --text-primary: #f3f4f6;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-muted: rgba(255, 255, 255, 0.62);
+  --icon-muted: rgba(255, 255, 255, 0.7);
+  --nav-inactive: rgba(255, 255, 255, 0.6);
   --scrollbar-thumb: rgba(255, 255, 255, 0.1);
 }
 
@@ -23,6 +27,10 @@ html.light {
   --panel-border-hover: rgba(15, 15, 25, 0.16);
   --input-bg: rgba(15, 15, 25, 0.03);
   --text-primary: #111827;
+  --text-secondary: #1f2937;
+  --text-muted: #4b5563;
+  --icon-muted: #475569;
+  --nav-inactive: #5b6473;
   --scrollbar-thumb: rgba(15, 15, 25, 0.15);
 }
 

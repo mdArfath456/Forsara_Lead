@@ -34,8 +34,8 @@ export function SidebarNav({ layoutId, onNavigate }) {
                   transition={{ type: 'spring', stiffness: 400, damping: 32 }}
                 />
               )}
-              <Icon size={17} className={`relative z-10 ${isActive ? 'text-white' : 'text-gray-400'}`} />
-              <span className={`relative z-10 font-medium ${isActive ? 'text-white' : 'text-gray-400'}`}>{label}</span>
+              <Icon size={17} className={`relative z-10 ${isActive ? 'text-white' : 'text-[var(--nav-inactive)]'}`} />
+              <span className={`relative z-10 font-medium ${isActive ? 'text-white' : 'text-[var(--nav-inactive)]'}`}>{label}</span>
             </>
           )}
         </NavLink>
