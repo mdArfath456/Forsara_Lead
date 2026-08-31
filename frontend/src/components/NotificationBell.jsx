@@ -48,18 +48,44 @@ export function NotificationBell() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.97 }}
               transition={{ duration: 0.15 }}
-              className="absolute bottom-full right-0 z-50 mb-2 max-h-96 w-[calc(100vw-1.5rem)] max-w-80 overflow-y-auto rounded-2xl glass-panel p-2"
+              className="absolute bottom-full right-0 z-50 mb-2 max-h-[24rem] w-[min(92vw,28rem)] overflow-hidden rounded-2xl border border-[var(--panel-border)] bg-[var(--panel-bg)] shadow-[0_14px_40px_rgba(15,23,42,0.22)] backdrop-blur-xl"
             >
-              {(data?.notifications || []).length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)] p-4 text-center">No notifications yet.</p>
-              ) : (
-                data.notifications.map((n) => (
-                  <div key={n._id} className="p-3 rounded-xl hover:bg-white/[0.04] text-sm">
-                    <p className="text-[var(--text-primary)]">{n.message}</p>
-                    <p className="text-xs text-[var(--text-muted)] mt-0.5">{new Date(n.createdAt).toLocaleString()}</p>
+              <div className="flex items-center justify-between border-b border-[var(--panel-border)] px-4 py-3">
+                <div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">Notifications</p>
+                  <p className="text-[11px] text-[var(--text-muted)]">{unreadCount} unread</p>
+                </div>
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => markAllRead.mutate()}
+                    className="rounded-lg px-2 py-1 text-[11px] font-medium text-[var(--text-primary)] hover:bg-white/5"
+                  >
+                    Mark all read
+                  </button>
+                )}
+              </div>
+
+              <div className="max-h-[20rem] overflow-y-auto p-2">
+                {(data?.notifications || []).length === 0 ? (
+                  <div className="flex min-h-[10rem] items-center justify-center p-4 text-center">
+                    <p className="text-sm text-[var(--text-muted)]">No notifications yet.</p>
                   </div>
-                ))
-              )}
+                ) : (
+                  data.notifications.map((n) => (
+                    <div
+                      key={n._id}
+                      className="flex items-start gap-3 rounded-xl border border-transparent px-3 py-3 transition-colors hover:border-[var(--panel-border)] hover:bg-white/[0.03]"
+                    >
+                      <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-500" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm leading-5 text-[var(--text-primary)]">{n.message}</p>
+                        <p className="mt-1 text-[11px] text-[var(--text-muted)]">{new Date(n.createdAt).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </motion.div>
           </>
         )}
