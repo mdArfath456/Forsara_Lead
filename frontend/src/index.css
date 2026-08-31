@@ -28,10 +28,23 @@ html.light {
   --input-bg: rgba(15, 15, 25, 0.03);
   --text-primary: #111827;
   --text-secondary: #1f2937;
-  --text-muted: #4b5563;
-  --icon-muted: #475569;
-  --nav-inactive: #5b6473;
+  --text-muted: #374151;
+  --icon-muted: #1f2937;
+  --nav-inactive: #374151;
   --scrollbar-thumb: rgba(15, 15, 25, 0.15);
+}
+
+html.light .text-gray-500,
+html.light .text-gray-400,
+html.light .text-gray-300,
+html.light .text-gray-600,
+html.light .text-gray-700,
+html.light .text-slate-500,
+html.light .text-slate-400,
+html.light .text-slate-600,
+html.light .text-zinc-400,
+html.light .text-zinc-500 {
+  color: var(--text-primary) !important;
 }
 
 body {
