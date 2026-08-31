@@ -6,6 +6,11 @@ import { apiClient } from '../lib/apiClient';
 import { ScoreBadge } from './ScoreBadge';
 import { LoadingState } from './StatusStates';
 
+function safeLinkedinHref(url) {
+  if (!url) return null;
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
 function Empty({ children = 'Not available' }) {
   return <span className="text-xs text-gray-600">{children}</span>;
 }
@@ -98,7 +103,7 @@ export function LeadDetailDrawer({ leadId, onClose }) {
                     {(company?.phone || data.phone) && <div className="flex items-center gap-2 text-gray-300"><Phone size={14} className="text-gray-500" /> {company?.phone || data.phone}</div>}
                     {(company?.email || data.email) && <div className="flex items-center gap-2 text-gray-300"><Mail size={14} className="text-gray-500" /> {company?.email || data.email}</div>}
                     {(company?.website || data.website) && <div className="flex items-center gap-2 text-gray-300"><Globe size={14} className="text-gray-500" /> <a className="hover:text-brand-400" href={company?.website || data.website} target="_blank" rel="noreferrer">{company?.website || data.website}</a></div>}
-                    {company?.linkedinUrl && <div className="flex items-center gap-2 text-gray-300"><Linkedin size={14} className="text-gray-500" /> <a className="hover:text-brand-400" href={company.linkedinUrl} target="_blank" rel="noreferrer">LinkedIn</a></div>}
+                    {company?.linkedinUrl && <div className="flex items-center gap-2 text-gray-300"><Linkedin size={14} className="text-gray-500" /> <a className="hover:text-brand-400" href={safeLinkedinHref(company.linkedinUrl)} target="_blank" rel="noreferrer">LinkedIn</a></div>}
                     {(data.city || data.country || company?.headquarters?.city) && <div className="flex items-center gap-2 text-gray-300"><MapPin size={14} className="text-gray-500" /> {[company?.headquarters?.city || data.city, company?.headquarters?.state || data.state, company?.headquarters?.country || data.country].filter(Boolean).join(', ')}</div>}
                   </div>
                 </section>
@@ -131,7 +136,7 @@ export function LeadDetailDrawer({ leadId, onClose }) {
                         <div className="mt-2 space-y-1 text-xs text-gray-400">
                           {person.email ? <div className="flex gap-2"><Mail size={12} /> {person.email} {person.emailStatus ? `(${person.emailStatus})` : ''}</div> : null}
                           {person.phone && <div className="flex gap-2"><Phone size={12} /> {person.phone}</div>}
-                          {person.linkedinUrl && <a className="flex gap-2 hover:text-brand-400" href={person.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={12} /> LinkedIn</a>}
+                          {person.linkedinUrl && <a className="flex gap-2 hover:text-brand-400" href={safeLinkedinHref(person.linkedinUrl)} target="_blank" rel="noreferrer"><Linkedin size={12} /> LinkedIn</a>}
                         </div>
                       </div>
                     ))}
