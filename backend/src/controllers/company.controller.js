@@ -5,7 +5,7 @@ import { Lead } from '../models/Lead.model.js';
 import { EnrichmentJob } from '../models/EnrichmentJob.model.js';
 import { createEnrichmentJob } from '../services/enrichment/LeadEnrichmentService.js';
 import { Project } from '../models/Project.model.js';
-import { domainFromWebsite } from '../services/leadProviders/ExploriumOrganizationProvider.js';
+import { domainFromWebsite } from '../services/leadProviders/ApolloOrganizationProvider.js';
 
 
 export async function selectCompany(req, res, next) {
@@ -34,7 +34,7 @@ export async function selectCompany(req, res, next) {
           postalCode: body.postalCode,
         },
         source: body.source || 'discovery',
-        provider: body.source === 'explorium' ? 'explorium' : 'discovery',
+        provider: body.source === 'apollo' ? 'apollo' : 'discovery',
         providerId: body.providerId,
       });
     } else {
@@ -44,7 +44,7 @@ export async function selectCompany(req, res, next) {
         ...(body.industry ? { industry: body.industry } : {}),
         ...(body.category ? { category: body.category } : {}),
         ...(body.phone ? { phone: body.phone } : {}),
-        ...(body.providerId ? { providerId: body.providerId, provider: body.source === 'explorium' ? 'explorium' : company.provider } : {}),
+        ...(body.providerId ? { providerId: body.providerId, provider: body.source === 'apollo' ? 'apollo' : company.provider } : {}),
       });
       await company.save();
     }
@@ -67,7 +67,7 @@ export async function selectCompany(req, res, next) {
       country: company.headquarters?.country,
       postalCode: company.headquarters?.postalCode,
       companyId: company._id,
-      source: body.source && ['google_places', 'overpass', 'foursquare', 'apollo', 'explorium', 'manual'].includes(body.source) ? body.source : 'manual',
+      source: body.source && ['google_places', 'overpass', 'foursquare', 'apollo', 'manual'].includes(body.source) ? body.source : 'manual',
       projectId: project._id,
     });
 

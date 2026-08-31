@@ -70,7 +70,7 @@ const companySchema = new Schema(
       },
     ],
     source: { type: String, default: 'discovery' },
-    provider: { type: String, default: 'explorium' },
+    provider: { type: String, default: 'apollo' },
     providerId: { type: String, index: true },
     sourceMeta: { type: sourceMetaSchema },
     rawProviderData: { type: Schema.Types.Mixed, select: false },

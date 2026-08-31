@@ -32,7 +32,7 @@ const contactSchema = new Schema(
         current: Boolean,
       },
     ],
-    provider: { type: String, default: 'explorium' },
+    provider: { type: String, default: 'apollo' },
     providerId: { type: String, index: true },
     enrichmentStatus: {
       type: String,

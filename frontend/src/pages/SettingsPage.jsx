@@ -17,11 +17,6 @@ export default function SettingsPage() {
     queryFn: () => apiClient.get('/integrations/apollo/status').then((r) => r.data),
     retry: false,
   });
-  const { data: explorium, isFetching: exploriumLoading, refetch: checkExplorium } = useQuery({
-    queryKey: ['explorium-status'],
-    queryFn: () => apiClient.get('/integrations/explorium/status').then((r) => r.data),
-    retry: false,
-  });
 
   useEffect(() => {
     if (data) {
@@ -43,24 +38,6 @@ export default function SettingsPage() {
       <h1 className="text-xl font-semibold">Settings</h1>
 
       <div className="p-6 rounded-2xl glass-panel space-y-4">
-        <div className="rounded-xl border border-[var(--panel-border)] p-4 bg-white/[0.02]">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div className="text-sm font-medium">Explorium API</div>
-              <div className="text-xs text-gray-500 mt-1">Primary company, prospect, email and phone enrichment provider.</div>
-            </div>
-            <button type="button" onClick={() => checkExplorium()} disabled={exploriumLoading} className="glass-button-ghost text-xs">
-              {exploriumLoading ? 'Checking…' : 'Check connection'}
-            </button>
-          </div>
-          {explorium && (
-            <div className={`mt-3 text-xs ${explorium.ok ? 'text-emerald-400' : 'text-red-400'}`}>
-              {explorium.ok ? '✓ Explorium API key is valid.' : `✕ ${explorium.message || 'Explorium API is unavailable.'}`}
-              {explorium.status ? ` (HTTP ${explorium.status})` : ''}
-            </div>
-          )}
-        </div>
-
         <div className="rounded-xl border border-[var(--panel-border)] p-4 bg-white/[0.02]">
           <div className="flex items-center justify-between gap-3">
             <div>

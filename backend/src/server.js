@@ -12,7 +12,6 @@ import { router } from './routes/index.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
 import { sanitizeInput } from './middleware/sanitizeInput.js';
 import { startScheduler } from './services/scheduler.js';
-import exploriumRoutes from './routes/explorium.routes.js';
 
 async function main() {
   await connectDB();
@@ -61,10 +60,6 @@ async function main() {
   app.use(notFoundHandler);
   app.use(errorHandler);
 
-  app.use(
-    '/api/explorium',
-    exploriumRoutes
-  );
   app.listen(env.port, () => {
     console.log(`[server] listening on port ${env.port} (${env.nodeEnv})`);
   });

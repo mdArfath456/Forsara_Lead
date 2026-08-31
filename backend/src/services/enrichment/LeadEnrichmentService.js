@@ -2,16 +2,11 @@ import { Lead } from '../../models/Lead.model.js';
 import { Company } from '../../models/Company.model.js';
 import { Contact } from '../../models/Contact.model.js';
 import { EnrichmentJob } from '../../models/EnrichmentJob.model.js';
-import { ExploriumOrganizationProvider, domainFromWebsite } from '../leadProviders/ExploriumOrganizationProvider.js';
-import { ExploriumPeopleProvider } from '../leadProviders/ExploriumPeopleProvider.js';
-import { ApolloOrganizationProvider } from '../leadProviders/ApolloOrganizationProvider.js';
+import { ApolloOrganizationProvider, domainFromWebsite } from '../leadProviders/ApolloOrganizationProvider.js';
 import { researchCompany } from '../research/CompanyResearchService.js';
 import { computeLeadScore } from '../../utils/leadScoring.js';
-import { env } from '../../config/env.js';
 
-const organizationProvider = new ExploriumOrganizationProvider();
-const peopleProvider = new ExploriumPeopleProvider();
-const apolloFallback = new ApolloOrganizationProvider();
+const apolloProvider = new ApolloOrganizationProvider();
 
 function companySeedFromLead(lead) {
   return {
@@ -31,7 +26,7 @@ function companySeedFromLead(lead) {
       ...(lead.location?.coordinates ? { longitude: lead.location.coordinates[0], latitude: lead.location.coordinates[1] } : {}),
     },
     source: lead.source,
-    provider: 'explorium',
+    provider: 'apollo',
   };
 }
 
@@ -45,20 +40,8 @@ async function upsertCompanyFromLead(lead) {
   return company;
 }
 
-async function enrichWithExplorium(company) {
-  try {
-    return await organizationProvider.enrich(company);
-  } catch (err) {
-    // Apollo remains a fallback only if explicitly configured. This prevents
-    // the whole workflow from depending on Apollo after moving to Explorium.
-    if (env.apolloApiKey) {
-      try {
-        const fallback = await apolloFallback.enrich(company);
-        if (fallback.status === 'enriched') return { ...fallback, data: { ...fallback.data, provider: 'apollo' } };
-      } catch {}
-    }
-    throw err;
-  }
+async function enrichWithApollo(company) {
+  return apolloProvider.enrich(company);
 }
 
 export async function runLeadEnrichment(jobId) {
@@ -91,10 +74,10 @@ export async function runLeadEnrichment(jobId) {
     await job.save();
 
     company = await upsertCompanyFromLead(lead);
-    const enrichment = await enrichWithExplorium(company);
+    const enrichment = await enrichWithApollo(company);
     if (enrichment.status === 'enriched') {
       company.set(enrichment.data);
-      company.provider = enrichment.data.provider || 'explorium';
+      company.provider = enrichment.data.provider || 'apollo';
       company.providerId = enrichment.providerId;
       company.sourceMeta = { source: company.provider, confidence: 'high', updatedAt: new Date() };
       company.rawProviderData = enrichment.raw;
@@ -142,66 +125,11 @@ export async function runLeadEnrichment(jobId) {
       job.progress = 45;
       await job.save();
 
-      // Explorium uses business_id as the company anchor for prospect search.
-      // If company enrichment did not return one, try matching the company now.
-      if (!company.providerId || company.provider !== 'explorium') {
-        const matched = await organizationProvider.match(company);
-        if (matched?.businessId) {
-          company.providerId = matched.businessId;
-          company.provider = 'explorium';
-          await company.save();
-        }
-      }
-
-      const people = await peopleProvider.search({
-        businessId: company.provider === 'explorium' ? company.providerId : undefined,
-        perPage: 25,
-      });
+      const existingContacts = await Contact.find({ companyId: company._id }).limit(1).lean();
+      peopleOk = existingContacts.length > 0;
 
       job.status = 'people_enriching';
-      await job.save();
-
-      let enrichedCount = 0;
-      for (const discovered of people.slice(0, env.exploriumMaxPocEnrich)) {
-        const existing = await Contact.findOne({ companyId: company._id, providerId: discovered.providerId });
-        const contact = existing || new Contact({ companyId: company._id, leadId: lead._id, fullName: discovered.fullName });
-        contact.set({
-          ...discovered,
-          companyId: company._id,
-          leadId: lead._id,
-          provider: 'explorium',
-          providerId: discovered.providerId,
-          rawProviderData: discovered.raw,
-          enrichmentStatus: 'discovered',
-        });
-        await contact.save();
-
-        try {
-          const enriched = await peopleProvider.enrich(discovered);
-          if (enriched) {
-            contact.set({
-              ...enriched,
-              companyId: company._id,
-              leadId: lead._id,
-              provider: 'explorium',
-              providerId: discovered.providerId,
-              rawProviderData: enriched.raw,
-              enrichmentStatus: 'enriched',
-              enrichedAt: new Date(),
-              sourceMeta: { source: 'explorium', confidence: 'high', updatedAt: new Date() },
-            });
-            await contact.save();
-            enrichedCount += 1;
-          }
-        } catch (personErr) {
-          contact.enrichmentStatus = 'partial';
-          await contact.save();
-          console.warn(`[explorium] contact enrichment failed for ${discovered.fullName}: ${personErr.message}`);
-        }
-      }
-
-      peopleOk = people.length > 0 && enrichedCount > 0;
-      job.steps.people = peopleOk ? 'completed' : people.length ? 'partial' : 'failed';
+      job.steps.people = peopleOk ? 'completed' : 'partial';
       job.progress = 75;
       await job.save();
       lead.enrichmentStatus = peopleOk ? 'contacts_enriched' : 'partial';

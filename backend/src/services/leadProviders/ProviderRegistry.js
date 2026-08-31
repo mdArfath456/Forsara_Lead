@@ -1,13 +1,12 @@
 import { GooglePlacesProvider } from './GooglePlacesProvider.js';
 import { FoursquareProvider } from './FoursquareProvider.js';
 import { OverpassProvider } from './OverpassProvider.js';
-import { ExploriumOrganizationProvider } from './ExploriumOrganizationProvider.js';
 import { ApolloOrganizationProvider } from './ApolloOrganizationProvider.js';
 
 class ProviderRegistry {
   constructor() {
     this.discoveryProviders = [new GooglePlacesProvider(), new FoursquareProvider(), new OverpassProvider()];
-    this.enrichmentProviders = [new ExploriumOrganizationProvider(), new ApolloOrganizationProvider()];
+    this.enrichmentProviders = [new ApolloOrganizationProvider()];
   }
 
   getDiscoveryProvider(key) {
@@ -32,7 +31,7 @@ class ProviderRegistry {
     throw lastError || new Error('No discovery providers available');
   }
 
-  async runEnrichment(company, preferredKey = 'explorium') {
+  async runEnrichment(company, preferredKey = 'apollo') {
     const provider = this.getEnrichmentProvider(preferredKey);
     return provider.enrich(company);
   }

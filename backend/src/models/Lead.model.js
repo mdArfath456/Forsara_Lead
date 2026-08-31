@@ -33,7 +33,7 @@ const leadSchema = new Schema(
 
     source: {
       type: String,
-      enum: ['google_places', 'overpass', 'foursquare', 'apollo', 'explorium', 'manual'],
+      enum: ['google_places', 'overpass', 'foursquare', 'apollo', 'manual'],
       required: true,
     },
     enrichmentStatus: {

@@ -12,7 +12,7 @@ import * as settings from '../controllers/settings.controller.js';
 import { importCsv } from '../controllers/import.controller.js';
 import * as savedSearches from '../controllers/savedSearch.controller.js';
 import * as companies from '../controllers/company.controller.js';
-import { getApolloStatus, getExploriumStatus } from '../controllers/integration.controller.js';
+import { getApolloStatus } from '../controllers/integration.controller.js';
 import { searchCompanies } from '../controllers/companySearch.controller.js';
 
 export const router = Router();
@@ -62,7 +62,6 @@ router.post('/export', createExport);
 router.get('/settings', settings.getSettings);
 router.patch('/settings', settings.updateSettings);
 router.get('/integrations/apollo/status', getApolloStatus);
-router.get('/integrations/explorium/status', getExploriumStatus);
 
 // Saved search alerts + notifications
 router.post('/saved-searches', savedSearches.createSavedSearch);

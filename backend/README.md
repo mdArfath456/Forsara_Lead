@@ -62,27 +62,14 @@ The application exposes an authenticated health check at `GET /api/integrations/
 
 If Apollo returns HTTP 401, replace/revoke the invalid key and restart the backend. HTTP 403 indicates that the key scope or Apollo plan does not allow the endpoint.
 
-## Explorium company intelligence
-
-The current enrichment pipeline uses Explorium as the primary B2B data provider. Keep the key on the backend only:
-
-```env
-EXPLORIUM_API_KEY=your_explorium_api_key
-EXPLORIUM_MAX_POC_ENRICH=15
-EXPLORIUM_ENABLE_HIERARCHY=true
-```
+## Company intelligence flow
 
 Company selection follows this flow:
 
 1. Company-first search / discovery
-2. Explorium Business Match -> `business_id`
-3. Firmographics enrichment
-4. Technographics enrichment
-5. Funding/acquisition enrichment
-6. Optional company hierarchy enrichment
-7. Explorium prospect fetch for decision makers
-8. Prospect profile enrichment
-9. Contact-information enrichment for email/phone
-10. Public company website research for projects/case studies/news pages
+2. Apollo organization enrichment
+3. Merge the enriched company data into the lead/company record
+4. Public company website research for projects/case studies/news pages
+5. Contact-information enrichment for email/phone when available
 
-Apollo remains an optional company-enrichment fallback when `APOLLO_API_KEY` is configured. Apollo is no longer used for POC discovery in the primary workflow.
+Apollo remains the existing company-enrichment provider for this application and is kept server-side only.

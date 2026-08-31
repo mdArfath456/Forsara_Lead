@@ -31,9 +31,6 @@ export const env = {
   googlePlacesApiKey: envValue('GOOGLE_PLACES_API_KEY') || '', // optional: free OSM/Foursquare are default
   foursquareApiKey: envValue('FOURSQUARE_API_KEY') || '',
   apolloApiKey: envValue('APOLLO_API_KEY') || '',
-  exploriumApiKey: envValue('EXPLORIUM_API_KEY') || '',
-  exploriumMaxPocEnrich: Math.max(1, Number(envValue('EXPLORIUM_MAX_POC_ENRICH') || 15)),
-  exploriumEnableHierarchy: String(envValue('EXPLORIUM_ENABLE_HIERARCHY') || 'true').toLowerCase() === 'true',
 
   corsOrigin: envValue('CORS_ORIGIN') || 'http://localhost:5173',
 };

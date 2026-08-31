@@ -2,8 +2,6 @@ import { Company } from '../models/Company.model.js';
 import { Lead } from '../models/Lead.model.js';
 import { providerRegistry } from '../services/leadProviders/ProviderRegistry.js';
 import { normalizeLead } from '../services/leadProviders/normalizeLead.js';
-import { env } from '../config/env.js';
-import { ExploriumOrganizationProvider, domainFromWebsite } from '../services/leadProviders/ExploriumOrganizationProvider.js';
 
 export async function searchCompanies(req, res, next) {
   try {
@@ -16,28 +14,7 @@ export async function searchCompanies(req, res, next) {
       Lead.find({ isDeleted: false, businessName: regex }).sort({ updatedAt: -1 }).limit(8).lean(),
     ]);
 
-    let providerResults = [];
-
-    // Explorium Business Match is used as an exact company-resolution layer
-    // when configured. It complements Places/OSM discovery instead of replacing it.
-    if (env.exploriumApiKey) {
-      try {
-        const explorium = new ExploriumOrganizationProvider();
-        const domain = q.includes('.') ? domainFromWebsite(q) : '';
-        const matched = await explorium.match({ name: domain ? '' : q, domain });
-        if (matched?.businessId) {
-          providerResults.push({
-            businessName: q,
-            domain,
-            website: domain ? `https://${domain}` : undefined,
-            source: 'explorium',
-            providerId: matched.businessId,
-          });
-        }
-      } catch (exploriumError) {
-        console.warn('[company-search] Explorium match failed:', exploriumError.message);
-      }
-    }
+    const providerResults = [];
 
     try {
       const { providerKey, results } = await providerRegistry.runDiscovery({ businessName: q, keyword: q, perPage: 10 });
